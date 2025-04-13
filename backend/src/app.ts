@@ -4,7 +4,8 @@ import NoteModel from "./models/note";
 import notesRoutes from "./routes/routes";
 
 const app = express();
-// const port = 5000;
+
+app.use(express.json());
 
 app.use("/api/notes", notesRoutes);
 app.use("/", async (req, res, next) => {
