@@ -3,6 +3,7 @@ import * as NotesController from "../controllers/notes";
 
 const router = express.Router();
 router.get("/", NotesController.getNotes);
+router.get("/:id", NotesController.getNote);
 router.post("/", NotesController.createNote);
 
 export default router;

@@ -1,0 +1,10 @@
+{
+  "dependencies": {
+    "http-errors": "^2.0.0",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/http-errors": "^2.0.4",
+    "@types/morgan": "^1.9.9"
+  }
+}
