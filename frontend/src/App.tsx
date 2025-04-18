@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "react-bootstrap";
-import "./App.css";
 import { Note as NoteModel } from "./models/notes";
 import Note from "./components/Note";
 // import { parse } from "path";
