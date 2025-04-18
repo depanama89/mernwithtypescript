@@ -94,6 +94,8 @@ export const updatenote: RequestHandler<
 
     res.status(200).json(updatedNote);
   } catch (error) {
+    console.log(error);
+
     next(error);
   }
 };
