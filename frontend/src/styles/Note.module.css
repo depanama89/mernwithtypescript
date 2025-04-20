@@ -1,11 +1,18 @@
 .noteCard {
-    background:cornsilk ;
+  background: cornsilk;
 }
-.cardBody{
-    overflow: hidden;
-    mask-image: linear-gradient(180deg, #000 60%, transparent);
+.cardBody {
+  overflow: hidden;
+  mask-image: linear-gradient(180deg, #000 60%, transparent);
 }
-.cardText{
+.cardText {
+  white-space: pre-line;
+}
 
-    white-space: pre-line;
+.cardTitle {
+  display: flex;
+  align-items: center;
+
+  justify-content: space-between;
+  width: 100%;
 }
