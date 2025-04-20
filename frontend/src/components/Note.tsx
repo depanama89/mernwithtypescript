@@ -7,10 +7,16 @@ import { Trash2 } from "lucide-react";
 
 interface NoteProps {
   note: NoteModel;
+  onNoteclicked: (note: NoteModel) => void;
   onDeleteNotesClicked: (note: NoteModel) => void;
   className?: string;
 }
-const Note = ({ note, onDeleteNotesClicked, className }: NoteProps) => {
+const Note = ({
+  note,
+  onNoteclicked,
+  onDeleteNotesClicked,
+  className,
+}: NoteProps) => {
   const { title, text, createdAt, updatedAt } = note;
 
   let createdUpdatedText: string;
@@ -22,7 +28,10 @@ const Note = ({ note, onDeleteNotesClicked, className }: NoteProps) => {
 
   return (
     // <MdIcons.MdDelete className="text-muted" />
-    <Card className={`${styles.noteCard} ${className}`}>
+    <Card
+      className={`${styles.noteCard} ${className}`}
+      onClick={() => onNoteclicked(note)}
+    >
       <Card.Body className={styles.cardBody}>
         <Card.Title className={styles.cardTitle}>
           {title}{" "}
