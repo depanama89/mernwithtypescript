@@ -2,6 +2,24 @@ import { RequestHandler } from "express";
 import createHttpError from "http-errors";
 import UserModel from "../models/user";
 import bcrypt from "bcrypt";
+
+
+export const getAuthenticatedUser:RequestHandler=async (req,res,next)=>{
+  const authenticatedUser=req.session.userId
+  try {
+    if(!authenticatedUser){
+      throw createHttpError(401,"User not authenticated")
+    }
+
+    const user=await UserModel.findById(authenticatedUser).select("+email").exec()
+    res.status(200).json(user)
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+
 interface SignUpBody {
   username?: string;
   email?: string;
@@ -97,3 +115,15 @@ export const login: RequestHandler<
     next(error);
   }
 };
+
+export const logout:RequestHandler=async(req,res,next)=>{
+  req.session.destroy((error)=>{
+    if(error){
+      next(error)
+    }else{
+      res.sendStatus(200)
+    }
+
+  })
+
+}
