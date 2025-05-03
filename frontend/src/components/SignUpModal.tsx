@@ -21,6 +21,7 @@ const SignUpModal = ({ onDismiss, onSignUpSuccessful }: SignUpModalProps) => {
   async function onSubmit(credentials: SignUpCredentials) {
     try {
       const newUser = await NotesApi.signUp(credentials);
+      onSignUpSuccessful(newUser);
     } catch (error) {
       alert(error);
       console.log(error);

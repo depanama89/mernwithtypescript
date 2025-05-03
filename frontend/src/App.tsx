@@ -49,14 +49,25 @@ const [showLoginModal,setShowLoginModal]=useState(false)
        </>
        
        
-        {showSignUpModal && (
-          <SignUpModal onDismiss={() => {}} onSignUpSuccessful={() => {}} />
+        
+      </Container>
+      {showSignUpModal && (
+          <SignUpModal
+           onDismiss={() => setShowSignUpModal(false)}
+            onSignUpSuccessful={(user) => {
+              setLoggedInUser(user)
+              setShowSignUpModal(false)
+            }} />
         )}
 
         {showLoginModal && (
-          <LoginModal onDismiss={() => {}} onLoginSuccessful={() => {}} />
+          <LoginModal 
+          onDismiss={() => setShowLoginModal(false)} 
+          onLoginSuccessful={(user) => {
+            setLoggedInUser(user)
+            setShowLoginModal(false)
+          }} />
         )}
-      </Container>
     </div>
   );
 }
