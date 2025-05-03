@@ -1,126 +1,63 @@
 import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Row, Spinner } from "react-bootstrap";
-import { Note as NoteModel } from "./models/notes";
+
 import Note from "./components/Note";
 import styles from "./styles/NotesPage.module.css";
 import stylesUtils from "./styles/utils.module.css";
-import * as NotesApi from "./network/note_api";
 import AddEditNoteDialog from "./components/AddEditNoteDialog";
 import SignUpModal from "./components/SignUpModal";
 import LoginModal from "./components/LoginModal";
+import NavBar from "./components/NavBar";
+import { User } from "./models/user";
+import * as NotesApi from "./network/note_api"
+import NotesPageLoggedInView from "./components/NotesPageLoggedInView";
+import NotesPageLoggedOutView from "./components/NotesPageLoggedOutView";
 
 function App() {
-  const [notes, setNotes] = useState<NoteModel[]>([]);
-
-  const [showAddNoteDialog, setShowAddNoteDialog] = useState(false);
-
-  const [notesLoading, setNoteLoading] = useState(true);
-  const [showNotesLoadingError, setShownotesloadingError] = useState(false);
-  const [noteToEdit, setNoteToEdit] = useState<NoteModel | null>(null);
-
-  useEffect(() => {
-    async function loadNotes() {
+  const [loggedInUser,setLoggedInUser]=useState<User | null>()
+  const [showSignUpModal, setShowSignUpModal] = useState(false);
+const [showLoginModal,setShowLoginModal]=useState(false)
+  useEffect(()=>{
+    async function fetchLoggedInUser(){
       try {
-        setShownotesloadingError(false);
-        setNoteLoading(true);
-        const notes = await NotesApi.fetchNotes();
-
-        setNotes(notes);
+        const user=await NotesApi.getLoggedInuser()
+        setLoggedInUser(user)
+        
       } catch (error) {
-        console.error(error);
-        setShownotesloadingError(true);
-      } finally {
-        setNoteLoading(false);
+      console.error(error)
       }
     }
-    loadNotes();
-  }, []);
-
-  async function deleteNote(note: NoteModel) {
-    try {
-      await NotesApi.deleteNote(note._id);
-      setNotes(notes.filter((existingNote) => existingNote._id !== note._id));
-    } catch (error) {
-      console.error(error);
-      alert(error);
-    }
-  }
-
-  const notesGrid = (
-    <Row xs={1} md={2} xl={3} className={`g-4 ${styles.noteGrid}`}>
-      {notes.map((note) => (
-        <Col key={note._id}>
-          <Note
-            note={note}
-            className={styles.note}
-            onNoteclicked={setNoteToEdit}
-            onDeleteNotesClicked={deleteNote}
-          />
-        </Col>
-      ))}
-    </Row>
-  );
-
+  })
+ 
+ 
   return (
-    <Container className={styles.NotesPage}>
-      <Button
-        onClick={() => setShowAddNoteDialog(true)}
-        className={`mb-4 mt-4  ${stylesUtils.blockCenter}`}
-      >
-        Add new note
-      </Button>
-      {notesLoading && <Spinner animation="border" variant="primary" />}
-      {showNotesLoadingError && (
-        <p>Something went wrong. Please refresh the page</p>
-      )}
-      {!notesLoading && !showNotesLoadingError && (
-        <>
-          {notes.length > 0 ? notesGrid : <p>You don't have any notes yet</p>}
-        </>
-      )}
-      {showAddNoteDialog && (
-        <AddEditNoteDialog
-          onDismiss={() => setShowAddNoteDialog(false)}
-          onNoteSaved={(newNote) => {
-            setNotes([...notes, newNote]);
-            setShowAddNoteDialog(false);
-          }}
-        />
-      )}
-      {noteToEdit && (
-        <AddEditNoteDialog
-          noteToEdit={noteToEdit}
-          onDismiss={() => setNoteToEdit(null)}
-          onNoteSaved={(updateNote) => {
-            setNotes(
-              notes.map((existingNote) =>
-                existingNote._id === updateNote._id ? updateNote : existingNote
-              )
-            );
-            setNoteToEdit(null);
-          }}
-        />
-      )}
+    
+    <div>
+      <NavBar
+        loggedInUser={loggedInUser}
+        onLoginClicked={() => setShowLoginModal(true)}
+        onSignUpClicked={() => setShowSignUpModal(true)}
+        onLogoutClicked={() => setLoggedInUser(null)}
+      />
+      <Container className={styles.NotesPage}>
+       <>
+       { loggedInUser ? <NotesPageLoggedInView /> 
+       : 
+        <NotesPageLoggedOutView/>
+       
+       }
+       </>
+       
+       
+        {showSignUpModal && (
+          <SignUpModal onDismiss={() => {}} onSignUpSuccessful={() => {}} />
+        )}
 
-      {
-        false && (
-          <SignUpModal
-          onDismiss={()=>{}}
-          onSignUpSuccessful={()=>{}}
-          />
-        )
-      }
-
-
-      {
-        true && (
-          <LoginModal 
-          onDismiss={()=>{}}
-          onLoginSuccessful={()=>{}}
-          />
-        )
-      }
-    </Container>
+        {showLoginModal && (
+          <LoginModal onDismiss={() => {}} onLoginSuccessful={() => {}} />
+        )}
+      </Container>
+    </div>
   );
 }
 
